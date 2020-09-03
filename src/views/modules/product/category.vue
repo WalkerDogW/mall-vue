@@ -7,6 +7,9 @@
       show-checkbox
       :default-expanded-keys="expandedKey"
       node-key="catId"
+      draggable
+      :allow-drop="allowDrop"
+      @node-drop="handleDrop"
     >
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
@@ -23,7 +26,12 @@
       </span>
     </el-tree>
 
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%" :close-on-click-modal="false">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :close-on-click-modal="false"
+    >
       <el-form :model="category">
         <el-form-item label="分类名称">
           <el-input v-model="category.name" autocomplete="off"></el-input>
@@ -51,6 +59,8 @@ export default {
   data() {
     //这里存数据
     return {
+      updateNodes: [],
+      maxLevel: 0,
       category: {
         catId: null,
         name: "",
@@ -199,6 +209,96 @@ export default {
         this.expandedKey = [this.category.parentCid];
         this.dialogVisible = false;
       });
+    },
+    allowDrop(draggingNode, dropNode, type) {
+      console.log(
+        "拖拽节点:" + draggingNode.data.name,
+        draggingNode,
+        "目标节点:" + dropNode.data.name,
+        dropNode,
+        "拖拽类型:" + type
+      );
+      //被拖动的当前节点以及目标节点总层数不能大于3
+      this.maxLevel = 0;
+      var nowMaxLevel = this.countLevel(draggingNode.data);
+      var nowLevel = draggingNode.data.catLevel;
+      var nowDifLevel = nowMaxLevel - nowLevel + 1;
+      if (this.maxLevel == 0) {
+        nowDifLevel = 1;
+      }
+
+      var targetLevel = dropNode.data.catLevel;
+      var targetParentLevel = targetLevel - 1;
+      console.log(
+        "nowMaxLevel:" + nowMaxLevel,
+        "nowDifLevel:" + nowDifLevel,
+        "targetLevel:" + targetLevel,
+        "targetParentLevel:" + targetParentLevel
+      );
+      if (type == "inner") {
+        if (nowDifLevel + targetLevel <= 3) {
+          console.log(
+            "inner-ok",
+            "nowDifLevel:" + nowDifLevel,
+            "targetLevel:" + targetLevel
+          );
+          return true;
+        }
+      } else {
+        if (targetLevel <= 3) {
+          console.log(
+            "pre/next-ok",
+            "nowDifLevel:" + nowDifLevel,
+            "targetParentLevel:" + targetParentLevel
+          );
+          return true;
+        }
+      }
+      return false;
+    },
+    countLevel(node) {
+      //最深子节点层级-当前层级+1
+
+      var count = 0;
+      if (node.children != null && node.children.length != 0) {
+        for (let i = 0; i < node.children.length; i++) {
+          if (node.children[i].catLevel >= this.maxLevel) {
+            this.maxLevel = node.children[i].catLevel;
+          }
+          this.countLevel(node.children[i]);
+        }
+      }
+      return this.maxLevel;
+    },
+    handleDrop(draggingNode, dropNode, type, event) {
+      this.updateNodes = [];
+      console.log("拖拽节点:" + draggingNode.data.name, draggingNode);
+      console.log("目标节点:" + dropNode.data.name, dropNode);
+      console.log("拖拽类型:" + type, event);
+      //当前节点最新父Id
+      let pCid = 0;
+      let siblings = null;
+      if (type == "before" || type == "after") {
+        pCid = dropNode.data.parentCid;
+        siblings = dropNode.parent.childNodes;
+      } else if (type == "inner") {
+        pCid = dropNode.data.catId;
+        siblings = dropNode.childNodes;
+      }
+      //当前节点顺序，直接重新排序
+      for (let i = 0; i < siblings.length; i++) {
+        //如果是拖拽的节点需要更新父ID，其他节点只更新顺序
+        if (siblings[i].data.catId == draggingNode.data.catId) {
+          this.updateNodes.push({
+            catId: siblings[i].data.catId,
+            sort: i,
+            parentCid: pCid,
+          });
+        } else {
+          this.updateNodes.push({ catId: siblings[i].data.catId, sort: i });
+        }
+      }
+      console.log("updateNodes", this.updateNodes);
     },
   },
   //声明周期 - 创建完成（可以访问当前this实例）
