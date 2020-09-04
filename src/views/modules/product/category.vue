@@ -1,5 +1,8 @@
 <template>
   <div>
+    <el-switch v-model="draggable" active-text="开启拖拽" inactive-text="关闭拖拽"></el-switch>
+    <!-- <el-button @click="batchSave">批量保存</el-button> -->
+    <el-button @click="batchDelete" type="danger">批量删除</el-button>
     <el-tree
       :data="menus"
       :props="defaultProps"
@@ -7,9 +10,10 @@
       show-checkbox
       :default-expanded-keys="expandedKey"
       node-key="catId"
-      draggable
+      :draggable="draggable"
       :allow-drop="allowDrop"
       @node-drop="handleDrop"
+      ref="menuTree"
     >
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
@@ -59,6 +63,7 @@ export default {
   data() {
     //这里存数据
     return {
+      draggable: false,
       updateNodes: [],
       maxLevel: 0,
       category: {
@@ -88,6 +93,45 @@ export default {
   watch: {},
   //方法
   methods: {
+    batchDelete() {
+      console.log("批量删除");
+      let checkNodes = this.$refs.menuTree.getCheckedNodes();
+      console.log("被选中的元素：", checkNodes);
+      let catIds = [];
+      for (let i = 0; i < checkNodes.length; i++) {
+        catIds.push(checkNodes[i].catId);
+      }
+      this.$confirm(`是否删除菜单`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+          var ids = catIds;
+          this.$http({
+            url: this.$http.adornUrl("/product/category/delete"),
+            method: "post",
+            data: this.$http.adornData(ids, false),
+          }).then((data) => {
+            //刷新出新的菜单
+            this.getMenus();
+            //设置需要默认展开的菜单
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    batchSave() {
+      console.log("批量保存");
+    },
     handleNodeClick(data) {
       //   console.log("当前节点", data);
     },
@@ -272,9 +316,14 @@ export default {
     },
     handleDrop(draggingNode, dropNode, type, event) {
       this.updateNodes = [];
-      console.log("拖拽节点:" + draggingNode.data.name, draggingNode);
-      console.log("目标节点:" + dropNode.data.name, dropNode);
-      console.log("拖拽类型:" + type, event);
+      console.log(
+        "拖拽节点:" + draggingNode.data.name,
+        draggingNode,
+        "目标节点:" + dropNode.data.name,
+        dropNode,
+        "拖拽类型:" + type,
+        event
+      );
       //当前节点最新父Id
       let pCid = 0;
       let siblings = null;
@@ -287,18 +336,45 @@ export default {
       }
       //当前节点顺序，直接重新排序
       for (let i = 0; i < siblings.length; i++) {
-        //如果是拖拽的节点需要更新父ID，其他节点只更新顺序
+        //如果是拖拽的节点则需要更新父ID，其他节点只更新顺序
         if (siblings[i].data.catId == draggingNode.data.catId) {
+          //修改拖拽后的层级和该子节点的层级
+          //   if (siblings[i].data.catLevel != draggingNode.level) {
+          //   }
           this.updateNodes.push({
             catId: siblings[i].data.catId,
             sort: i,
             parentCid: pCid,
+            catLevel: siblings[i].level,
           });
+          this.updateChildNodeLevel(siblings[i]);
         } else {
           this.updateNodes.push({ catId: siblings[i].data.catId, sort: i });
         }
       }
-      console.log("updateNodes", this.updateNodes);
+
+      this.$http({
+        url: this.$http.adornUrl("/product/category/update/sort"),
+        method: "post",
+        data: this.$http.adornData(this.updateNodes, false),
+      }).then((data) => {
+        console.log("更新成功：updateNodes", this.updateNodes);
+        //刷新出新的菜单
+        this.getMenus();
+        this.expandedKey = [pCid];
+      });
+    },
+    updateChildNodeLevel(node) {
+      if (node.childNodes != null && node.childNodes.length != 0) {
+        for (let i = 0; i < node.childNodes.length; i++) {
+          var cNode = node.childNodes[i].data;
+          this.updateNodes.push({
+            catId: cNode.catId,
+            catLevel: node.childNodes[i].level,
+          });
+          this.updateChildNodeLevel(node.childNodes[i]);
+        }
+      }
     },
   },
   //声明周期 - 创建完成（可以访问当前this实例）
