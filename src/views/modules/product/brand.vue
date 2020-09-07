@@ -1,5 +1,6 @@
 <template>
   <div class="mod-config">
+    <!-- <singleUpload></singleUpload> -->
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
@@ -67,6 +68,7 @@
 </template>
 
 <script>
+// import singleUpload from "@/components/upload/singleUpload.vue";
 import AddOrUpdate from "./brand-add-or-update";
 export default {
   data() {
@@ -85,6 +87,7 @@ export default {
   },
   components: {
     AddOrUpdate,
+    // singleUpload,
   },
   activated() {
     this.getDataList();

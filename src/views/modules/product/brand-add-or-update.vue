@@ -15,7 +15,8 @@
         <el-input v-model="dataForm.name" placeholder="品牌名"></el-input>
       </el-form-item>
       <el-form-item label="logo" prop="logo">
-        <el-input v-model="dataForm.logo" placeholder="品牌logo地址"></el-input>
+        <!-- <el-input v-model="dataForm.logo" placeholder="品牌logo地址"></el-input> -->
+        <singleUpload></singleUpload>
       </el-form-item>
       <el-form-item label="介绍" prop="descript">
         <el-input v-model="dataForm.descript" placeholder="介绍"></el-input>
@@ -38,6 +39,7 @@
 </template>
 
 <script>
+import singleUpload from "@/components/upload/singleUpload.vue";
 export default {
   data() {
     return {
@@ -72,6 +74,10 @@ export default {
         sort: [{ required: true, message: "排序不能为空", trigger: "blur" }],
       },
     };
+  },
+  components: {
+    singleUpload,
+    // singleUpload,
   },
   methods: {
     init(id) {
