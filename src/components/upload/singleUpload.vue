@@ -82,8 +82,8 @@
           policy().then(response => {
             _self.dataObj.policy = response.data.policy;
             _self.dataObj.signature = response.data.signature;
-            _self.dataObj.ossaccessKeyId = response.data.accessid;
-            _self.dataObj.key = response.data.dir + '/'+getUUID()+'_${filename}';
+            _self.dataObj.ossaccessKeyId = response.data.ossaccessKeyId;
+            _self.dataObj.key = response.data.dir +getUUID()+'_${filename}';
             _self.dataObj.dir = response.data.dir;
             _self.dataObj.host = response.data.host;
             console.log("response",response,"self",_self.dataObj);

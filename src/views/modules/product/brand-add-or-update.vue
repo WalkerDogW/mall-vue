@@ -22,7 +22,13 @@
         <el-input v-model="dataForm.descript" placeholder="介绍"></el-input>
       </el-form-item>
       <el-form-item label="显示" prop="showStatus">
-        <el-switch v-model="dataForm.showStatus" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+        <el-switch
+          v-model="dataForm.showStatus"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          active-value="1"
+          inactive-value="0"
+        ></el-switch>
       </el-form-item>
       <el-form-item label="检索" prop="firstLetter">
         <el-input v-model="dataForm.firstLetter" placeholder="检索首字母"></el-input>
@@ -39,7 +45,8 @@
 </template>
 
 <script>
-import singleUpload from "@/components/upload/singleUpload.vue";
+// import singleUpload from "@/components/upload/singleUpload.vue";
+import singleUpload from "./upload";
 export default {
   data() {
     return {
@@ -54,24 +61,24 @@ export default {
         sort: "",
       },
       dataRule: {
-        name: [{ required: true, message: "品牌名不能为空", trigger: "blur" }],
+        name: [{ required: false, message: "品牌名不能为空", trigger: "blur" }],
         logo: [
-          { required: true, message: "品牌logo地址不能为空", trigger: "blur" },
+          { required: false, message: "品牌logo地址不能为空", trigger: "blur" },
         ],
         descript: [
-          { required: true, message: "介绍不能为空", trigger: "blur" },
+          { required: false, message: "介绍不能为空", trigger: "blur" },
         ],
         showStatus: [
           {
-            required: true,
+            required: false,
             message: "显示状态[0-不显示；1-显示]不能为空",
             trigger: "blur",
           },
         ],
         firstLetter: [
-          { required: true, message: "检索首字母不能为空", trigger: "blur" },
+          { required: false, message: "检索首字母不能为空", trigger: "blur" },
         ],
-        sort: [{ required: true, message: "排序不能为空", trigger: "blur" }],
+        sort: [{ required: false, message: "排序不能为空", trigger: "blur" }],
       },
     };
   },

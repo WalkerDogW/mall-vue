@@ -1,13 +1,12 @@
 <template>
-  <div>
+  <div @click="clickUpLoad">
     <el-upload
       action="http://mall-file-oss.oss-cn-shenzhen.aliyuncs.com"
       :data="dataObj"
       list-type="picture"
       :multiple="false"
-      :show-file-list="showFileList"
-      :file-list="fileList"
       :before-upload="beforeUpload"
+      :on-success="handleUploadSuccess"
     >
       <el-button size="small" type="primary">点击上传</el-button>
       <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10MB</div>
@@ -16,6 +15,7 @@
 </template>
 
 <script>
+import { getUUID } from "@/utils";
 export default {
   //import 引入的组件需要注入到对象中才能使用
   components: {},
@@ -37,48 +37,39 @@ export default {
     };
   },
   //计算属性
-  computed: {
-    imageUrl() {
-      return this.value;
-    },
-    imageName() {
-      if (this.value != null && this.value !== "") {
-        return this.value.substr(this.value.lastIndexOf("/") + 1);
-      } else {
-        return null;
-      }
-    },
-    fileList() {
-      return [
-        {
-          name: this.imageName,
-          url: this.imageUrl,
-        },
-      ];
-    },
-    showFileList: {
-      get: function () {
-        return (
-          this.value !== null && this.value !== "" && this.value !== undefined
-        );
-      },
-      set: function (newValue) {},
-    },
-  },
+  computed: {},
   //监控data中数据变化
   watch: {},
   //方法
   methods: {
+    clickUpLoad() {
+      this.$http({
+        url: this.$http.adornUrl("/third/oss/policy"),
+        method: "get",
+        params: this.$http.adornParams({}),
+      }).then(({ data }) => {
+        this.dataObj = data.data;
+        this.dataObj.key = data.data.dir + getUUID() + "_";
+        console.log("request");
+      });
+    },
+    // beforeUpload: async function (file) {
+    //   await this.$http({
+    //     url: this.$http.adornUrl("/third/oss/policy"),
+    //     method: "get",
+    //     params: this.$http.adornParams({}),
+    //   }).then(({ data }) => {
+    //     this.dataObj = data.data;
+    //     this.dataObj.key = data.data.dir + getUUID() + "_" + file.name;
+    //   });
+    //   return true;
+    // },
     beforeUpload(file) {
-     this.$http({
-     url: this.$http. adornUrl('/third/oss/policy'),
-     method: 'get',
-     params: this.$http.adornParams({})
-     }).then(({data})=>{
-       console.log("data",data,"file",file);
-      //  this.dataObj=
-       return true;
-     })
+      this.dataObj.key = this.dataObj.key + file.name;
+      return true;
+    },
+    handleUploadSuccess(res, file) {
+      console.log("上传成功...");
     },
   },
   //声明周期 - 创建完成（可以访问当前this实例）
