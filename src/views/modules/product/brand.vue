@@ -113,6 +113,7 @@ export default {
           this.totalPage = 0;
         }
         this.dataListLoading = false;
+        console.log("getDataList");
       });
     },
     // 每页数
