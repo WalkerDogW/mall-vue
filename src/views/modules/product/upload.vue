@@ -1,5 +1,5 @@
 <template>
-  <div @click="clickUpLoad">
+  <div>
     <el-upload
       action="http://mall-file-oss.oss-cn-shenzhen.aliyuncs.com"
       :data="dataObj"
@@ -8,7 +8,7 @@
       :before-upload="beforeUpload"
       :on-success="handleUploadSuccess"
     >
-      <el-button size="small" type="primary">点击上传</el-button>
+      <el-button size="small" type="primary"  @click="clickUpLoad">点击上传</el-button>
       <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10MB</div>
     </el-upload>
   </div>

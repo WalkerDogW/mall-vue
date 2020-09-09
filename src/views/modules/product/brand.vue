@@ -32,15 +32,15 @@
       <el-table-column prop="name" header-align="center" align="center" label="品牌名"></el-table-column>
       <el-table-column prop="logo" header-align="center" align="center" label="logo"></el-table-column>
       <el-table-column prop="descript" header-align="center" align="center" label="介绍"></el-table-column>
-      <el-table-column prop="showStatus" header-align="center" align="center" label="显示">
+      <el-table-column prop="showStatus" label="显示" header-align="center" align="center">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.showStatus"
             active-color="#13ce66"
             inactive-color="#ff4949"
             @change="updateBrandStatus(scope.row)"
-            active-value="1"
-            inactive-value="0"
+            active-value=1
+            inactive-value=0
           ></el-switch>
         </template>
       </el-table-column>
@@ -93,6 +93,16 @@ export default {
     this.getDataList();
   },
   methods: {
+    // formatter(row, column) {
+    //   console.log(row, column);
+    //   console.log(row);
+    //   if (row.showStatus == 1) {
+    //     return "true";
+    //   } else {
+    //     return "false";
+    //   }
+    //   return 0;
+    // },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;
@@ -113,7 +123,7 @@ export default {
           this.totalPage = 0;
         }
         this.dataListLoading = false;
-        console.log("getDataList");
+        console.log("getDataList",data);
       });
     },
     // 每页数
