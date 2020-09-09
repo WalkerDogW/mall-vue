@@ -39,8 +39,8 @@
             active-color="#13ce66"
             inactive-color="#ff4949"
             @change="updateBrandStatus(scope.row)"
-            active-value="1"
-            inactive-value="0"
+            :active-value="1"
+            :inactive-value="0"
           ></el-switch>
         </template>
       </el-table-column>
@@ -90,8 +90,10 @@ export default {
     // singleUpload,
   },
   activated() {
+    // this.getDataList();
+  },
+  mounted() {
     this.getDataList();
-    this.getDataList2();
   },
   methods: {
     // formatter(row, column) {
@@ -123,31 +125,12 @@ export default {
           this.dataList = [];
           this.totalPage = 0;
         }
+
         this.dataListLoading = false;
-        console.log("getDataList", data);
+        console.log("getDataList",data.page.list[0]);
       });
     },
-    getDataList2() {
-      this.$http({
-        url: this.$http.adornUrl("/product/brand/list"),
-        method: "get",
-        params: this.$http.adornParams({
-          page: this.pageIndex,
-          limit: this.pageSize,
-          key: this.dataForm.key,
-        }),
-      }).then(({ data }) => {
-        // if (data && data.code === 0) {
-        //   this.dataList = data.page.list;
-        //   this.totalPage = data.page.totalCount;
-        // } else {
-        //   this.dataList = [];
-        //   this.totalPage = 0;
-        // }
-        // this.dataListLoading = false;
-        console.log("getDataList2", data);
-      });
-    },
+
     // 每页数
     sizeChangeHandle(val) {
       this.pageSize = val;
