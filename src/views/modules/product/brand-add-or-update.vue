@@ -63,8 +63,8 @@ export default {
     var checkSort = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("排序字段必须填写"));
-      } else if (!Number.isInteger(value)) {
-        callback(new Error("排序必须是一个整数"));
+      } else if (!Number.isInteger(value) || value<0) {
+        callback(new Error("排序必须是一个大于0的整数"));
       } else {
         callback();
       }
