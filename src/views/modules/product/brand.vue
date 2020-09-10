@@ -2,11 +2,11 @@
   <div class="mod-config">
     <!-- <singleUpload></singleUpload> -->
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
+      <!-- <el-form-item>
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList()">刷新</el-button>
         <el-button
           v-if="isAuth('product:brand:save')"
           type="primary"
@@ -30,7 +30,14 @@
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="brandId" header-align="center" align="center" label="品牌id"></el-table-column>
       <el-table-column prop="name" header-align="center" align="center" label="品牌名"></el-table-column>
-      <el-table-column prop="logo" header-align="center" align="center" label="logo"></el-table-column>
+      <el-table-column prop="logo" header-align="center" align="center" label="logo">
+        <template slot-scope="scope">
+          <!-- <div style="  display: flex;justify-content: center;">
+            <el-image style="width: 100px; height: 80px" :src="scope.row.logo" fit="fill"></el-image>
+          </div> -->
+          <img :src="scope.row.logo" alt="" style="width: 100px; height: 80px">
+        </template>
+      </el-table-column>
       <el-table-column prop="descript" header-align="center" align="center" label="介绍"></el-table-column>
       <el-table-column prop="showStatus" label="显示" header-align="center" align="center">
         <template slot-scope="scope">
@@ -127,7 +134,7 @@ export default {
         }
 
         this.dataListLoading = false;
-        console.log("getDataList",data.page.list[0]);
+        console.log("getDataList", data.page.list[0]);
       });
     },
 

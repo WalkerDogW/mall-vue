@@ -19,9 +19,6 @@ import { getUUID } from "@/utils";
 export default {
   //import 引入的组件需要注入到对象中才能使用
   components: {},
-  props: {
-    value: String,
-  },
   data() {
     //这里存数据
     return {
@@ -50,7 +47,7 @@ export default {
       }).then(({ data }) => {
         this.dataObj = data.data;
         this.dataObj.key = data.data.dir + getUUID() + "_";
-        console.log("request");
+        console.log("request",this.dataObj);
       });
     },
     // beforeUpload: async function (file) {
@@ -66,10 +63,13 @@ export default {
     // },
     beforeUpload(file) {
       this.dataObj.key = this.dataObj.key + file.name;
+      
       return true;
     },
     handleUploadSuccess(res, file) {
       console.log("上传成功...");
+      this.$emit("input", this.dataObj.host+"/"+this.dataObj.key);
+      console.log(this.dataObj.host+"/"+this.dataObj.key);
     },
   },
   //声明周期 - 创建完成（可以访问当前this实例）
