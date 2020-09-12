@@ -16,7 +16,7 @@
       </el-form-item>
       <el-form-item label="logo" prop="logo">
         <!-- <el-input v-model="dataForm.logo" placeholder="品牌logo地址"></el-input> -->
-        <img :src="dataForm.logo" alt style="width: 100px; height: 80px" />
+        <img :src="dataForm.logo" alt style="width: 100px; height: 100px" />
         <!-- <el-image style="width: 100px; height: 100px" :src="dataForm.logo" fit="cover"></el-image> -->
         <singleUpload v-model="dataForm.logo"></singleUpload>
       </el-form-item>
@@ -36,7 +36,7 @@
         <el-input v-model="dataForm.firstLetter" placeholder="检索首字母"></el-input>
       </el-form-item>
       <el-form-item label="排序" prop="sort">
-        <el-input v-model="dataForm.sort.number" placeholder="排序"></el-input>
+        <el-input v-model.number="dataForm.sort" placeholder="排序"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

@@ -30,12 +30,12 @@
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="brandId" header-align="center" align="center" label="品牌id"></el-table-column>
       <el-table-column prop="name" header-align="center" align="center" label="品牌名"></el-table-column>
-      <el-table-column prop="logo" header-align="center" align="center" label="logo">
+      <el-table-column prop="logo" header-align="center" align="center" label="logo" >
         <template slot-scope="scope">
           <!-- <div style="  display: flex;justify-content: center;">
             <el-image style="width: 100px; height: 80px" :src="scope.row.logo" fit="fill"></el-image>
-          </div> -->
-          <img :src="scope.row.logo" alt="" style="width: 100px; height: 80px">
+          </div>-->
+          <img :src="scope.row.logo" alt style="width: 100px; height: 100px" />
         </template>
       </el-table-column>
       <el-table-column prop="descript" header-align="center" align="center" label="介绍"></el-table-column>

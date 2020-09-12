@@ -1,8 +1,10 @@
 <template>
   <div>
     <el-switch v-model="draggable" active-text="开启拖拽" inactive-text="关闭拖拽"></el-switch>
-    <!-- <el-button @click="batchSave">批量保存</el-button> -->
-    <el-button @click="batchDelete" type="danger">批量删除</el-button>
+    <!-- <el-button @click="batchSave">批量保存</el-button> --><span>&nbsp; &nbsp; &nbsp; &nbsp; </span>
+    <el-button-group>
+      <el-button type="danger" icon="el-icon-delete" @click="batchDelete"  circle>删除</el-button>
+    </el-button-group>
     <el-tree
       :data="menus"
       :props="defaultProps"
