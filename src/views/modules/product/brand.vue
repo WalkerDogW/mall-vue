@@ -134,7 +134,7 @@ export default {
         }
 
         this.dataListLoading = false;
-        console.log("getDataList", data.page.list[0]);
+        console.log("getDataList", data);
       });
     },
 
