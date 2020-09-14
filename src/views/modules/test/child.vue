@@ -1,21 +1,18 @@
 <template>
   <div>
-    <input type="button" value="我是父组件中的按钮" @click="show" />
-    <child @update:isShow="bol=>isShow=bol" v-show="isShow" />
+    我是一个子组件
+    <input type="button" value="点我隐身" @click="upIsShow" />
   </div>
 </template>
 
 <script>
-import child from "./child";
 export default {
   //import 引入的组件需要注入到对象中才能使用
-  components: { child },
+  components: {},
   props: {},
   data() {
     //这里存数据
-    return {
-      isShow: false,
-    };
+    return {};
   },
   //计算属性
   computed: {},
@@ -23,8 +20,8 @@ export default {
   watch: {},
   //方法
   methods: {
-    show() {
-      this.isShow = true;
+    upIsShow() {
+      this.$emit("update:isShow", false);
     },
   },
   //声明周期 - 创建完成（可以访问当前this实例）

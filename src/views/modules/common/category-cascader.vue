@@ -1,32 +1,55 @@
 <template>
   <div>
-    <input type="button" value="我是父组件中的按钮" @click="show" />
-    <child @update:isShow="bol=>isShow=bol" v-show="isShow" />
+    <el-cascader
+      filterable
+      clearable
+      placeholder="试试搜索：手机"
+      v-model="paths"
+      :options="categorys"
+      :props="setting"
+    ></el-cascader>
   </div>
 </template>
 
 <script>
-import child from "./child";
 export default {
   //import 引入的组件需要注入到对象中才能使用
-  components: { child },
-  props: {},
+  components: {},
+  props: {
+    catelogPath: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+  },
   data() {
     //这里存数据
     return {
-      isShow: false,
+      setting: {
+        value: "catId",
+        label: "name",
+        children: "children",
+      },
+      categorys: [],
+      paths: this.catelogPath,
     };
   },
   //计算属性
   computed: {},
   //监控data中数据变化
-  watch: {},
-  //方法
-  methods: {
-    show() {
-      this.isShow = true;
+  watch: {
+    catelogPath(v) {
+      this.paths = this.catelogPath;
+    },
+    paths(v) {
+      this.$emit("update:catelogPath", v);
+      //还可以使用pubsub-js进行传值
+      this.PubSub.publish("catPath", v);
     },
   },
+  //方法
+  methods: {},
   //声明周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
