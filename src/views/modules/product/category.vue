@@ -1,9 +1,16 @@
 <template>
   <div>
     <el-switch v-model="draggable" active-text="开启拖拽" inactive-text="关闭拖拽"></el-switch>
-    <!-- <el-button @click="batchSave">批量保存</el-button> --><span>&nbsp; &nbsp; &nbsp; &nbsp; </span>
+    <!-- <el-button @click="batchSave">批量保存</el-button> -->
+    <span>&nbsp; &nbsp; &nbsp; &nbsp;</span>
     <el-button-group>
-      <el-button type="danger" icon="el-icon-delete" @click="batchDelete"  circle>删除</el-button>
+      <!-- <el-button type="danger" icon="el-icon-delete" @click="batchDelete"  circle>删除</el-button> -->
+      <el-button
+        v-if="isAuth('product:attrgroup:delete')"
+        type="danger"
+        @click="batchDelete"
+        :disabled="batchDeleteFlag"
+      >批量删除</el-button>
     </el-button-group>
     <el-tree
       :data="menus"
@@ -16,6 +23,7 @@
       :allow-drop="allowDrop"
       @node-drop="handleDrop"
       ref="menuTree"
+      @check="ifCheck"
     >
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
@@ -65,6 +73,7 @@ export default {
   data() {
     //这里存数据
     return {
+      batchDeleteFlag: true,
       draggable: false,
       updateNodes: [],
       maxLevel: 0,
@@ -95,10 +104,17 @@ export default {
   watch: {},
   //方法
   methods: {
+    ifCheck() {
+      console.log("check");
+      this.batchDeleteFlag = false;
+    },
     batchDelete() {
       console.log("批量删除");
       let checkNodes = this.$refs.menuTree.getCheckedNodes();
       console.log("被选中的元素：", checkNodes);
+      if(checkNodes.length == 0){
+        return;
+      }
       let catIds = [];
       for (let i = 0; i < checkNodes.length; i++) {
         catIds.push(checkNodes[i].catId);

@@ -45,13 +45,24 @@ export default {
     paths(v) {
       this.$emit("update:catelogPath", v);
       //还可以使用pubsub-js进行传值
-      this.PubSub.publish("catPath", v);
+      // this.PubSub.publish("catPath", v);
     },
   },
   //方法
-  methods: {},
+  methods: {
+    getCategorys() {
+      this.$http({
+        url: this.$http.adornUrl("/product/category/list/tree"),
+        method: "get",
+      }).then(({ data }) => {
+        this.categorys = data.data;
+      });
+    },
+  },
   //声明周期 - 创建完成（可以访问当前this实例）
-  created() {},
+  created() {
+    this.getCategorys();
+  },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前

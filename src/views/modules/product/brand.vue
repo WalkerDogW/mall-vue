@@ -82,7 +82,7 @@
         </div>
         <el-button slot="reference">新增关联</el-button>
       </el-popover>
-      <!-- <el-table :data="cateRelationTableData" style="width: 100%">
+      <el-table :data="cateRelationTableData" style="width: 100%">
         <el-table-column prop="id" label="#"></el-table-column>
         <el-table-column prop="brandName" label="品牌名"></el-table-column>
         <el-table-column prop="catelogName" label="分类名"></el-table-column>
@@ -95,7 +95,7 @@
             >移除</el-button>
           </template>
         </el-table-column>
-      </el-table>-->
+      </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button @click="cateRelationDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="cateRelationDialogVisible = false">确 定</el-button>
@@ -107,6 +107,7 @@
 <script>
 // import singleUpload from "@/components/upload/singleUpload.vue";
 import AddOrUpdate from "./brand-add-or-update";
+import categoryCascader from "../common/category-cascader";
 export default {
   data() {
     return {
@@ -123,11 +124,12 @@ export default {
       cateRelationDialogVisible: false,
       popCatelogSelectVisible: false,
       cateRelationTableData: [],
-      catelogPath:[]
+      catelogPath: [],
     };
   },
   components: {
     AddOrUpdate,
+    categoryCascader,
     // singleUpload,
   },
   activated() {
@@ -258,6 +260,13 @@ export default {
         }),
       }).then(({ data }) => {
         this.cateRelationTableData = data.data;
+
+        console.log(
+          "responed",
+          data,
+          "cateRelationTableData",
+          this.cateRelationTableData
+        );
       });
     },
     addCatelogSelect() {
@@ -273,6 +282,15 @@ export default {
           },
           false
         ),
+      }).then(({ data }) => {
+        this.getCateRelation();
+      });
+    },
+    deleteCateRelationHandle(id, brandId) {
+      this.$http({
+        url: this.$http.adornUrl("/product/categorybrandrelation/delete"),
+        method: "post",
+        data: this.$http.adornData([id], false),
       }).then(({ data }) => {
         this.getCateRelation();
       });

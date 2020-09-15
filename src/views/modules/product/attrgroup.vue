@@ -11,6 +11,7 @@
           </el-form-item>
           <el-form-item>
             <el-button @click="getDataList()">查询</el-button>
+            <el-button type="success" @click="getAllDataList()">查询全部</el-button>
             <el-button
               v-if="isAuth('product:attrgroup:save')"
               type="primary"
@@ -46,6 +47,7 @@
             label="操作"
           >
             <template slot-scope="scope">
+              <el-button type="text" size="small" @click="relationHandle(scope.row.attrGroupId)">关联</el-button>
               <el-button
                 type="text"
                 size="small"
@@ -60,12 +62,14 @@
           @current-change="currentChangeHandle"
           :current-page="pageIndex"
           :page-sizes="[10, 20, 50, 100]"
-          :page-size="pageSize"
+          :page-size="pageSize" 
           :total="totalPage"
           layout="total, sizes, prev, pager, next, jumper"
         ></el-pagination>
         <!-- 弹窗, 新增 / 修改 -->
         <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+        <!-- 修改关联关系 -->
+        <relation-update v-if="relationVisible" ref="relationUpdate" @refreshData="getDataList"></relation-update>
       </div>
     </el-col>
   </el-row>
@@ -81,7 +85,7 @@ export default {
   data() {
     //这里存数据
     return {
-      catId:0,
+      catId: 0,
       dataForm: {
         key: "",
       },
@@ -100,6 +104,10 @@ export default {
   watch: {},
   //方法
   methods: {
+    getAllDataList() {
+      this.catId = 0;
+      this.getDataList();
+    },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;
@@ -181,17 +189,26 @@ export default {
       });
     },
     //感知树节点被点击
-    treeNodeClick(data,node,component){
-      console.log("子组件categoty的节点被点击",data,node,component);
-      if(node.level==3){
-        this.catId=data.catId;
+    treeNodeClick(data, node, component) {
+      console.log("子组件categoty的节点被点击", data, node, component);
+      if (node.level == 3) {
+        this.catId = data.catId;
         this.getDataList();
       }
-    }
+    },
+    //处理分组与属性的关联
+    relationHandle(groupId) {
+      this.relationVisible = true;
+      this.$nextTick(() => {
+        this.$refs.relationUpdate.init(groupId);
+      });
+    },
   },
 
   //声明周期 - 创建完成（可以访问当前this实例）
-  created() {},
+  created() {
+    this.getAllDataList();
+  },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
