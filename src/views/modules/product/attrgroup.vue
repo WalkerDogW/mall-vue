@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="20">
     <el-col :span="6">
-      <Category @tree-node-click="treeNodeClick"></Category>
+      <category @tree-node-click="treeNodeClick"></category>
     </el-col>
     <el-col :span="18">
       <div class="mod-config">
@@ -62,7 +62,7 @@
           @current-change="currentChangeHandle"
           :current-page="pageIndex"
           :page-sizes="[10, 20, 50, 100]"
-          :page-size="pageSize" 
+          :page-size="pageSize"
           :total="totalPage"
           layout="total, sizes, prev, pager, next, jumper"
         ></el-pagination>
@@ -78,9 +78,10 @@
 <script>
 import Category from "../common/category";
 import AddOrUpdate from "./attrgroup-add-or-update";
+import relationUpdate from "./attr-group-relation";
 export default {
   //import 引入的组件需要注入到对象中才能使用
-  components: { Category, AddOrUpdate },
+  components: { Category, AddOrUpdate, relationUpdate },
   props: {},
   data() {
     //这里存数据
@@ -96,6 +97,7 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false,
+      relationVisible: false,
     };
   },
   //计算属性
