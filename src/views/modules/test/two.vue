@@ -138,6 +138,10 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false,
+      //
+      catId: 0,
+      type: 1,
+      attrtype: 1,
     };
   },
   components: {
@@ -148,11 +152,19 @@ export default {
     this.getDataList();
   },
   methods: {
-    // 获取数据列表
+    //感知树节点被点击
+    treeNodeClick(data, node, component) {
+      if (node.level == 3) {
+        this.catId = data.catId;
+        this.getDataList(); //重新查询
+      }
+    },
+    // 获取分类属性列表
     getDataList() {
       this.dataListLoading = true;
+      let type = this.attrtype == 0 ? "sale" : "base";
       this.$http({
-        url: this.$http.adornUrl("/product/attr/list"),
+        url: this.$http.adornUrl(`/product/attr/${type}/list/${this.catId}`),
         method: "get",
         params: this.$http.adornParams({
           page: this.pageIndex,
@@ -169,6 +181,11 @@ export default {
         }
         this.dataListLoading = false;
       });
+    },
+    //获取所有属性列表
+    getAllDataList() {
+      this.catId = 0;
+      this.getDataList();
     },
     // 每页数
     sizeChangeHandle(val) {
